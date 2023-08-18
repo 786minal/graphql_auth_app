@@ -13,6 +13,10 @@
 !/log/.keep
 !/tmp/.keep
 
+/config/database.yml
+Gemfile.lock
+db/schema.rb
+
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/
