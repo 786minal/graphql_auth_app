@@ -1,12 +1,10 @@
 class GraphqlController < ApplicationController
-
   def execute
     variables = prepare_variables(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      # Query context goes here, for example:
-      # current_user: current_user,
+      current_user: authenticated_user
     }
     result = GraphqlAuthAppSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
@@ -42,5 +40,22 @@ class GraphqlController < ApplicationController
     logger.error e.backtrace.join("\n")
 
     render json: { errors: [{ message: e.message, backtrace: e.backtrace }], data: {} }, status: 500
+  end
+
+  def authenticated_user
+    token = request.headers['Authorization']
+    return unless token.present?
+
+    decoded_token = decode_token(token)
+    return unless decoded_token.present?
+
+    user_id = decoded_token[0]['user_id']
+    User.find_by(id: user_id)
+  rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+    nil 
+  end
+
+  def decode_token(token)
+    JWT.decode(token.split(' ').last, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256')
   end
 end

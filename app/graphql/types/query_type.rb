@@ -4,24 +4,26 @@ module Types
     include GraphQL::Types::Relay::HasNodeField
     include GraphQL::Types::Relay::HasNodesField
 
-    # /users
-    field :users, [Types::UserType], null: false,
-      description: "All Users"
+    # /posts
+    field :posts, [Types::PostType], null: false,
+      description: "All posts"
 
-    def users
-      User.all
+    def posts
+      current_user = @context[:current_user]
+      current_user.posts
     end
 
-    # /user/:id
-    field :user, Types::UserType, null: false,
-      description: "Fetch speccfic user" do
+     # /posts/:id
+    field :post, Types::PostType, null: false,
+      description: "Fetch speccfic post" do
       argument :id, ID, required: true
     end
 
-    def user(id:)
-      User.find(id)
+    def post(id:)
+      current_user = @context[:current_user]
+      Post.find_by(id: id, user_id: current_user.id) 
       rescue ActiveRecord::RecordNotFound => _e
-        GraphQL::ExecutionError.new('User does not exist.')
+        GraphQL::ExecutionError.new('Post does not exist.')
       rescue ActiveRecord::RecordInvalid => e
         GraphQL::ExecutionError.new("Invalid attributes for #{e.record.class}:"\
           " #{e.record.errors.full_messages.join(', ')}")
