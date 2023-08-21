@@ -12,7 +12,7 @@ module Mutations
         user = User.new(email: params[:email], password: params[:password])
         if user.save
           token = JWT.encode({ user_id: user.id }, Rails.application.secrets.secret_key_base)
-          { user: user, token: token }
+          { user: user, token: token, errors: [] }
         else
           { user: nil, token: nil, errors: user.errors.full_messages }
         end

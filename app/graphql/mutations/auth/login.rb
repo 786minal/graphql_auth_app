@@ -13,7 +13,7 @@ module Mutations
 
         if user && user.valid_password?(params[:password])
           token = JWT.encode({ user_id: user.id }, Rails.application.secrets.secret_key_base)
-          { user: user, token: token }
+          { user: user, token: token, errors: [] }
         else
           raise GraphQL::ExecutionError, 'Invalid email or password.'
         end
