@@ -1,6 +1,7 @@
 module Mutations
   module Auth
     class Login < Mutations::BaseMutation
+      argument :name, String, required: true
       argument :email, String, required: true
       argument :password, String, required: true
 
@@ -9,10 +10,11 @@ module Mutations
       field :user, Types::UserType, null: true
 
       def resolve(**params)
-        user = User.find_for_database_authentication(email: params[:email])
+        user =  User.find_by(email: params[:email])
 
-        if user && user.valid_password?(params[:password])
-          token = JWT.encode({ user_id: user.id }, Rails.application.secrets.secret_key_base)
+        if user&.authenticate( params[:password])
+          payload = { user_id: user.id , exp: 24.hours.from_now.to_i }
+          token   = Authentication::JwtToken::encode(payload)
           { user: user, token: token, errors: [] }
         else
           raise GraphQL::ExecutionError, 'Invalid email or password.'

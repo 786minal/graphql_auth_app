@@ -37,8 +37,8 @@ gem "jbuilder"
 gem "bcrypt"
 
 gem 'graphql'
-gem 'devise-jwt'
-gem 'devise', github: 'heartcombo/devise'
+
+gem 'jwt'
 
 gem 'rack-cors'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
