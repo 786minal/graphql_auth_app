@@ -15,12 +15,16 @@ RSpec.describe User, type: :model do
     user2 = build(:user, email: user1.email)
     expect(user2).to_not be_valid
   end
-  it "is not valid without a email" do 
+  it "is not valid without a email" do
     user2 = build(:user, email: nil)
     expect(user2).to_not be_valid
   end
   it "is not valid without a password" do 
     user2 = build(:user, password: nil)
+    expect(user2).to_not be_valid
+  end
+  it "is not valid without a name" do
+    user2 = build(:user, name: nil)
     expect(user2).to_not be_valid
   end
   it "minimum length 8 of a password" do 
