@@ -7,8 +7,8 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 5.times do
-  user = User.create(password: Faker::Name.name, email: Faker::Internet.email)
+  user = User.find_or_create_by(name: Faker::Name.name, password: Faker::Internet.password, email: Faker::Internet.email)
   5.times do
-    user.posts.create(title: Faker::Lorem.sentence(word_count: 3), description: Faker::Lorem::paragraph(sentence_count: 3))
+    user.posts.find_or_create_by(title: Faker::Lorem.sentence(word_count: 3), description: Faker::Lorem::paragraph(sentence_count: 3))
   end
 end
