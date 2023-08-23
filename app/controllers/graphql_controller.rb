@@ -43,19 +43,19 @@ class GraphqlController < ApplicationController
   end
 
   def authenticated_user
-    token = request.headers['Authorization']
-    return unless token.present?
+    auth_header = request.headers['Authorization']
+    return unless auth_header.present?
 
-    decoded_token = decode_token(token)
+    token = auth_header.split(' ')[1]
+    decoded_token = Authentication::JwtToken::decode(token)
     return unless decoded_token.present?
 
+    expiration_time = decoded_token[0]['exp']
     user_id = decoded_token[0]['user_id']
     User.find_by(id: user_id)
+  rescue JWT::ExpiredSignature
+    raise GraphQL::ExecutionError.new('Authentication token expired')
   rescue JWT::DecodeError, ActiveRecord::RecordNotFound
     nil 
-  end
-
-  def decode_token(token)
-    JWT.decode(token.split(' ').last, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256')
   end
 end

@@ -37,8 +37,8 @@ gem "jbuilder"
 gem "bcrypt"
 
 gem 'graphql'
-gem 'devise-jwt'
-gem 'devise', github: 'heartcombo/devise'
+
+gem 'jwt'
 
 gem 'rack-cors'
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -58,6 +58,9 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem 'pry', '~> 0.14.2'
   gem 'faker', '~> 3.2', '>= 3.2.1'
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'database_cleaner'
 end
 
 group :development do
